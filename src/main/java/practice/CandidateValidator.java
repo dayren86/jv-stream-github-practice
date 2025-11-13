@@ -12,8 +12,7 @@ public class CandidateValidator implements Predicate<Candidate> {
     @Override
     public boolean test(Candidate candidate) {
         int reduce = Arrays.stream(candidate.getPeriodsInUkr().split("-"))
-                .map(Integer::parseInt)
-                .mapToInt(i -> i)
+                .mapToInt(Integer::parseInt)
                 .reduce(0, (left, right) -> right - left);
 
         return candidate.getAge() >= ALLOW_AGE
