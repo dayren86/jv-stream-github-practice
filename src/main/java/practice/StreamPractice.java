@@ -2,7 +2,6 @@ package practice;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.OptionalDouble;
 import java.util.stream.IntStream;
 import model.Candidate;
 import model.Cat;
@@ -17,18 +16,13 @@ public class StreamPractice {
      * "Can't get min value from list: < Here is our input 'numbers' >"
      */
     public int findMinEvenNumber(List<String> numbers) {
-        if (numbers.isEmpty()) {
-            throw new RuntimeException("Can't get min value from list: " + numbers);
-        }
-
         return numbers.stream()
-                .map(n -> n.split(","))
-                .flatMap(Arrays::stream)
-                .map(String::trim)
+                .flatMap(n -> Arrays.stream(n.split(",")))
                 .map(Integer::parseInt)
                 .filter(i -> i % 2 == 0)
                 .min(Integer::compare)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new RuntimeException(
+                        "Can't get min value from list " + numbers));
     }
 
     /**
@@ -37,11 +31,11 @@ public class StreamPractice {
      * But before that subtract 1 from each element on an odd position (having the odd index).
      */
     public Double getOddNumsAverage(List<Integer> numbers) {
-        OptionalDouble average = IntStream.range(0, numbers.size())
+        return IntStream.range(0, numbers.size())
                 .map(i -> i % 2 != 0 ? numbers.get(i) - 1 : numbers.get(i))
                 .filter(n -> n % 2 != 0)
-                .average();
-        return average.getAsDouble();
+                .average()
+                .getAsDouble();
     }
 
     /**
@@ -106,10 +100,8 @@ public class StreamPractice {
      * parametrized with Candidate in CandidateValidator.
      */
     public List<String> validateCandidates(List<Candidate> candidates) {
-        CandidateValidator candidateValidator = new CandidateValidator();
-
         return candidates.stream()
-                .filter(candidateValidator)
+                .filter(new CandidateValidator())
                 .map(Candidate::getName)
                 .sorted()
                 .toList();
